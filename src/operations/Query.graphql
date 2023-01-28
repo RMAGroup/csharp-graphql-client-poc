@@ -1,0 +1,18 @@
+query GetComponents {
+  components(first: 200, order: { code: ASC }) {
+    nodes {
+      code
+      name
+    }
+  }
+}
+
+query Get {
+  productionStations(first: 200, order: { sequence: ASC}) {
+    nodes {
+      code
+      name
+      sequence
+    }
+  }
+}

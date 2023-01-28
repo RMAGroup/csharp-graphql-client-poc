@@ -1,0 +1,3082 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Kit {
+  vin: String!
+  kitNo: String!
+  lotId: UUID!
+  lot: Lot!
+  dealerId: UUID
+  dealer: Dealer
+  kitComponents: [KitComponent!]!
+  timelineEvents: [KitTimelineEvent!]!
+  snapshots: [KitSnapshot!]!
+  kitVins: [KitVin!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type BasicKitInfo {
+  vin: String!
+  kitNo: String!
+  lotNo: String!
+  modelCode: String!
+  modelName: String!
+}
+
+type ComponentSerialDTO {
+  vin: String!
+  componentSerialId: UUID!
+  lotNo: String!
+  componentCode: String!
+  componentName: String!
+  productionStationCode: String!
+  productionStationName: String!
+  serial1: String!
+  serial2: String!
+  verifiedAt: DateTime
+  createdAt: DateTime!
+}
+
+input VinFileKitInput {
+  vin: String
+  lotNo: String
+  kitNo: String
+}
+
+type VinFileKit {
+  vin: String
+  lotNo: String
+  kitNo: String
+}
+
+type KitTimelineDTO {
+  vin: String!
+  lotNo: String!
+  kitNo: String!
+  timelineItems: [TimelineEventDTO!]!
+}
+
+type PCV {
+  pcvComponents: [PcvComponent!]!
+  code: String!
+  description: String!
+  modelYear: String!
+  model: String!
+  series: String!
+  body: String!
+  pcvModel: PcvModel
+  pcvModelId: UUID
+  pcvSubmodel: PcvSubmodel
+  pcvSubmodelId: UUID
+  pcvSeries: PcvSeries
+  pcvSeriesId: UUID
+  pcvEngine: PcvEngine
+  pcvEngineId: UUID
+  pcvTransmission: PcvTransmission
+  pcvTransmissionId: UUID
+  pcvDrive: PcvDrive
+  pcvDriveId: UUID
+  pcvPaint: PcvPaint
+  pcvPaintId: UUID
+  pcvTrim: PcvTrim
+  pcvTrimId: UUID
+  lots: [Lot!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type KitComponent {
+  componentSerials(where: ComponentSerialFilterInput): [ComponentSerial]
+  kitId: UUID!
+  kit: Kit
+  componentId: UUID!
+  component: Component
+  productionStationId: UUID!
+  productionStation: ProductionStation
+  verifiedAt: DateTime
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type KitListItemDTO {
+  vin: String!
+  id: UUID!
+  lotNo: String!
+  kitNo: String!
+  modelCode: String!
+  modelName: String!
+  lastTimelineEvent: String
+  lastTimelineEventDate: DateTime
+  componentCount: Int
+  scannedComponentCount: Int
+  verifiedComponentCount: Int
+  imported: DateTime
+}
+
+type KitVin {
+  vin: String
+  kitVinImportId: UUID!
+  kitVinImport: KitVinImport
+  kitId: UUID!
+  kit: Kit
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+input ComponentSerialFilterInput {
+  and: [ComponentSerialFilterInput!]
+  or: [ComponentSerialFilterInput!]
+  kitComponentId: ComparableGuidOperationFilterInput
+  kitComponent: KitComponentFilterInput
+  serial1: StringOperationFilterInput
+  serial2: StringOperationFilterInput
+  original_Serial1: StringOperationFilterInput
+  original_Serial2: StringOperationFilterInput
+  verifiedAt: ComparableNullableOfDateTimeOperationFilterInput
+  dcwsResponses: ListFilterInputTypeOfDcwsResponseFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ComparableGuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID!]
+  nin: [UUID!]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+input KitComponentFilterInput {
+  and: [KitComponentFilterInput!]
+  or: [KitComponentFilterInput!]
+  kitId: ComparableGuidOperationFilterInput
+  kit: KitFilterInput
+  componentId: ComparableGuidOperationFilterInput
+  component: ComponentFilterInput
+  productionStationId: ComparableGuidOperationFilterInput
+  productionStation: ProductionStationFilterInput
+  componentSerials: ListFilterInputTypeOfComponentSerialFilterInput
+  verifiedAt: ComparableNullableOfDateTimeOperationFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input ComparableNullableOfDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ListFilterInputTypeOfDcwsResponseFilterInput {
+  all: DcwsResponseFilterInput
+  none: DcwsResponseFilterInput
+  some: DcwsResponseFilterInput
+  any: Boolean
+}
+
+input ComparableDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime!]
+  nin: [DateTime!]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input KitFilterInput {
+  and: [KitFilterInput!]
+  or: [KitFilterInput!]
+  vIN: StringOperationFilterInput
+  kitNo: StringOperationFilterInput
+  lotId: ComparableGuidOperationFilterInput
+  lot: LotFilterInput
+  dealerId: ComparableNullableOfGuidOperationFilterInput
+  dealer: DealerFilterInput
+  kitComponents: ListFilterInputTypeOfKitComponentFilterInput
+  timelineEvents: ListFilterInputTypeOfKitTimelineEventFilterInput
+  snapshots: ListFilterInputTypeOfKitSnapshotFilterInput
+  kitVins: ListFilterInputTypeOfKitVinFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ComponentFilterInput {
+  and: [ComponentFilterInput!]
+  or: [ComponentFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  iconURL: StringOperationFilterInput
+  productionStation: ProductionStationFilterInput
+  productionStationId: ComparableNullableOfGuidOperationFilterInput
+  componentSerialRule: ComponentSerialRuleOperationFilterInput
+  dcwsRequired: BooleanOperationFilterInput
+  pcvComponents: ListFilterInputTypeOfPcvComponentFilterInput
+  kitComponents: ListFilterInputTypeOfKitComponentFilterInput
+  componentStations: ListFilterInputTypeOfComponentStationFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ProductionStationFilterInput {
+  and: [ProductionStationFilterInput!]
+  or: [ProductionStationFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  sequence: ComparableInt32OperationFilterInput
+  modelComponents: ListFilterInputTypeOfPcvComponentFilterInput
+  kitComponents: ListFilterInputTypeOfKitComponentFilterInput
+  defaultStationComponents: ListFilterInputTypeOfComponentFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ListFilterInputTypeOfComponentSerialFilterInput {
+  all: ComponentSerialFilterInput
+  none: ComponentSerialFilterInput
+  some: ComponentSerialFilterInput
+  any: Boolean
+}
+
+input DcwsResponseFilterInput {
+  and: [DcwsResponseFilterInput!]
+  or: [DcwsResponseFilterInput!]
+  processExcptionCode: StringOperationFilterInput
+  errorMessage: StringOperationFilterInput
+  componentSerialId: ComparableGuidOperationFilterInput
+  componentSerial: ComponentSerialFilterInput
+  dcwsSuccessfulSave: BooleanOperationFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input LotFilterInput {
+  and: [LotFilterInput!]
+  or: [LotFilterInput!]
+  lotNo: StringOperationFilterInput
+  note: StringOperationFilterInput
+  plantId: ComparableGuidOperationFilterInput
+  plant: PlantFilterInput
+  bomId: ComparableGuidOperationFilterInput
+  bom: BomFilterInput
+  modelId: ComparableGuidOperationFilterInput
+  pcv: PCVFilterInput
+  kits: ListFilterInputTypeOfKitFilterInput
+  lotParts: ListFilterInputTypeOfLotPartFilterInput
+  shipmentLots: ListFilterInputTypeOfShipmentLotFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ComparableNullableOfGuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID]
+  nin: [UUID]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+input DealerFilterInput {
+  and: [DealerFilterInput!]
+  or: [DealerFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  kits: ListFilterInputTypeOfKitFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ListFilterInputTypeOfKitComponentFilterInput {
+  all: KitComponentFilterInput
+  none: KitComponentFilterInput
+  some: KitComponentFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfKitTimelineEventFilterInput {
+  all: KitTimelineEventFilterInput
+  none: KitTimelineEventFilterInput
+  some: KitTimelineEventFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfKitSnapshotFilterInput {
+  all: KitSnapshotFilterInput
+  none: KitSnapshotFilterInput
+  some: KitSnapshotFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfKitVinFilterInput {
+  all: KitVinFilterInput
+  none: KitVinFilterInput
+  some: KitVinFilterInput
+  any: Boolean
+}
+
+input ComponentSerialRuleOperationFilterInput {
+  eq: ComponentSerialRule
+  neq: ComponentSerialRule
+  in: [ComponentSerialRule!]
+  nin: [ComponentSerialRule!]
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
+input ListFilterInputTypeOfPcvComponentFilterInput {
+  all: PcvComponentFilterInput
+  none: PcvComponentFilterInput
+  some: PcvComponentFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfComponentStationFilterInput {
+  all: ComponentStationFilterInput
+  none: ComponentStationFilterInput
+  some: ComponentStationFilterInput
+  any: Boolean
+}
+
+input ComparableInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int!]
+  nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input ListFilterInputTypeOfComponentFilterInput {
+  all: ComponentFilterInput
+  none: ComponentFilterInput
+  some: ComponentFilterInput
+  any: Boolean
+}
+
+input PlantFilterInput {
+  and: [PlantFilterInput!]
+  or: [PlantFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  partnerPlantCode: StringOperationFilterInput
+  partnerPlantType: StringOperationFilterInput
+  lots: ListFilterInputTypeOfLotFilterInput
+  kitSnapshotRuns: ListFilterInputTypeOfKitSnapshotRunFilterInput
+  boms: ListFilterInputTypeOfBomFilterInput
+  shipments: ListFilterInputTypeOfShipmentFilterInput
+  kitVinImports: ListFilterInputTypeOfKitVinImportFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input BomFilterInput {
+  and: [BomFilterInput!]
+  or: [BomFilterInput!]
+  plantId: ComparableGuidOperationFilterInput
+  plant: PlantFilterInput
+  sequence: ComparableInt32OperationFilterInput
+  lotPartQuantitiesMatchShipment: BooleanOperationFilterInput
+  lots: ListFilterInputTypeOfLotFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input PCVFilterInput {
+  and: [PCVFilterInput!]
+  or: [PCVFilterInput!]
+  code: StringOperationFilterInput
+  description: StringOperationFilterInput
+  modelYear: StringOperationFilterInput
+  model: StringOperationFilterInput
+  series: StringOperationFilterInput
+  body: StringOperationFilterInput
+  pcvModel: PcvModelFilterInput
+  pcvModelId: ComparableNullableOfGuidOperationFilterInput
+  pcvSubmodel: PcvSubmodelFilterInput
+  pcvSubmodelId: ComparableNullableOfGuidOperationFilterInput
+  pcvSeries: PcvSeriesFilterInput
+  pcvSeriesId: ComparableNullableOfGuidOperationFilterInput
+  pcvEngine: PcvEngineFilterInput
+  pcvEngineId: ComparableNullableOfGuidOperationFilterInput
+  pcvTransmission: PcvTransmissionFilterInput
+  pcvTransmissionId: ComparableNullableOfGuidOperationFilterInput
+  pcvDrive: PcvDriveFilterInput
+  pcvDriveId: ComparableNullableOfGuidOperationFilterInput
+  pcvPaint: PcvPaintFilterInput
+  pcvPaintId: ComparableNullableOfGuidOperationFilterInput
+  pcvTrim: PcvTrimFilterInput
+  pcvTrimId: ComparableNullableOfGuidOperationFilterInput
+  lots: ListFilterInputTypeOfLotFilterInput
+  pcvComponents: ListFilterInputTypeOfPcvComponentFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ListFilterInputTypeOfKitFilterInput {
+  all: KitFilterInput
+  none: KitFilterInput
+  some: KitFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfLotPartFilterInput {
+  all: LotPartFilterInput
+  none: LotPartFilterInput
+  some: LotPartFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfShipmentLotFilterInput {
+  all: ShipmentLotFilterInput
+  none: ShipmentLotFilterInput
+  some: ShipmentLotFilterInput
+  any: Boolean
+}
+
+input KitTimelineEventFilterInput {
+  and: [KitTimelineEventFilterInput!]
+  or: [KitTimelineEventFilterInput!]
+  kitTimelineEventTypeId: ComparableGuidOperationFilterInput
+  eventType: KitTimelineEventTypeFilterInput
+  eventDate: ComparableDateTimeOperationFilterInput
+  eventNote: StringOperationFilterInput
+  kitId: ComparableGuidOperationFilterInput
+  kit: KitFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input KitSnapshotFilterInput {
+  and: [KitSnapshotFilterInput!]
+  or: [KitSnapshotFilterInput!]
+  kitSnapshotRunId: ComparableGuidOperationFilterInput
+  kitSnapshotRun: KitSnapshotRunFilterInput
+  kitId: ComparableGuidOperationFilterInput
+  kit: KitFilterInput
+  changeStatusCode: SnapshotChangeStatusOperationFilterInput
+  kitTimeLineEventTypeId: ComparableGuidOperationFilterInput
+  kitTimeLineEventType: KitTimelineEventTypeFilterInput
+  vIN: StringOperationFilterInput
+  dealerCode: StringOperationFilterInput
+  engineSerialNumber: StringOperationFilterInput
+  orginalPlanBuild: ComparableNullableOfDateTimeOperationFilterInput
+  customReceived: ComparableNullableOfDateTimeOperationFilterInput
+  planBuild: ComparableNullableOfDateTimeOperationFilterInput
+  verifyVIN: ComparableNullableOfDateTimeOperationFilterInput
+  buildCompleted: ComparableNullableOfDateTimeOperationFilterInput
+  gateRelease: ComparableNullableOfDateTimeOperationFilterInput
+  wholesale: ComparableNullableOfDateTimeOperationFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input KitVinFilterInput {
+  and: [KitVinFilterInput!]
+  or: [KitVinFilterInput!]
+  kitVinImportId: ComparableGuidOperationFilterInput
+  kitVinImport: KitVinImportFilterInput
+  kitId: ComparableGuidOperationFilterInput
+  kit: KitFilterInput
+  vIN: StringOperationFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input PcvComponentFilterInput {
+  and: [PcvComponentFilterInput!]
+  or: [PcvComponentFilterInput!]
+  pcvId: ComparableGuidOperationFilterInput
+  pcv: PCVFilterInput
+  componentId: ComparableGuidOperationFilterInput
+  component: ComponentFilterInput
+  productionStationId: ComparableGuidOperationFilterInput
+  productionStation: ProductionStationFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ComponentStationFilterInput {
+  and: [ComponentStationFilterInput!]
+  or: [ComponentStationFilterInput!]
+  component: ComponentFilterInput
+  componentId: ComparableGuidOperationFilterInput
+  station: ProductionStationFilterInput
+  stationId: ComparableGuidOperationFilterInput
+  saveCDCComponent: BooleanOperationFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ListFilterInputTypeOfLotFilterInput {
+  all: LotFilterInput
+  none: LotFilterInput
+  some: LotFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfKitSnapshotRunFilterInput {
+  all: KitSnapshotRunFilterInput
+  none: KitSnapshotRunFilterInput
+  some: KitSnapshotRunFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfBomFilterInput {
+  all: BomFilterInput
+  none: BomFilterInput
+  some: BomFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfShipmentFilterInput {
+  all: ShipmentFilterInput
+  none: ShipmentFilterInput
+  some: ShipmentFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfKitVinImportFilterInput {
+  all: KitVinImportFilterInput
+  none: KitVinImportFilterInput
+  some: KitVinImportFilterInput
+  any: Boolean
+}
+
+input PcvModelFilterInput {
+  and: [PcvModelFilterInput!]
+  or: [PcvModelFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  pcvs: ListFilterInputTypeOfPCVFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input PcvSubmodelFilterInput {
+  and: [PcvSubmodelFilterInput!]
+  or: [PcvSubmodelFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  pcvs: ListFilterInputTypeOfPCVFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input PcvSeriesFilterInput {
+  and: [PcvSeriesFilterInput!]
+  or: [PcvSeriesFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  pcvs: ListFilterInputTypeOfPCVFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input PcvEngineFilterInput {
+  and: [PcvEngineFilterInput!]
+  or: [PcvEngineFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  pcvs: ListFilterInputTypeOfPCVFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input PcvTransmissionFilterInput {
+  and: [PcvTransmissionFilterInput!]
+  or: [PcvTransmissionFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  pcvs: ListFilterInputTypeOfPCVFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input PcvDriveFilterInput {
+  and: [PcvDriveFilterInput!]
+  or: [PcvDriveFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  pcvs: ListFilterInputTypeOfPCVFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input PcvPaintFilterInput {
+  and: [PcvPaintFilterInput!]
+  or: [PcvPaintFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  pcvs: ListFilterInputTypeOfPCVFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input PcvTrimFilterInput {
+  and: [PcvTrimFilterInput!]
+  or: [PcvTrimFilterInput!]
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  pcvs: ListFilterInputTypeOfPCVFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input LotPartFilterInput {
+  and: [LotPartFilterInput!]
+  or: [LotPartFilterInput!]
+  partId: ComparableGuidOperationFilterInput
+  part: PartFilterInput
+  bomQuantity: ComparableInt32OperationFilterInput
+  shipmentQuantity: ComparableInt32OperationFilterInput
+  lotId: ComparableGuidOperationFilterInput
+  lot: LotFilterInput
+  received: ListFilterInputTypeOfLotPartReceivedFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ShipmentLotFilterInput {
+  and: [ShipmentLotFilterInput!]
+  or: [ShipmentLotFilterInput!]
+  shipmentId: ComparableGuidOperationFilterInput
+  shipment: ShipmentFilterInput
+  lotId: ComparableGuidOperationFilterInput
+  lot: LotFilterInput
+  invoices: ListFilterInputTypeOfShipmentInvoiceFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input KitTimelineEventTypeFilterInput {
+  and: [KitTimelineEventTypeFilterInput!]
+  or: [KitTimelineEventTypeFilterInput!]
+  code: TimeLineEventCodeOperationFilterInput
+  description: StringOperationFilterInput
+  sequence: ComparableInt32OperationFilterInput
+  snapshots: ListFilterInputTypeOfKitSnapshotFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input KitSnapshotRunFilterInput {
+  and: [KitSnapshotRunFilterInput!]
+  or: [KitSnapshotRunFilterInput!]
+  plantId: ComparableGuidOperationFilterInput
+  plant: PlantFilterInput
+  runDate: ComparableDateTimeOperationFilterInput
+  sequence: ComparableInt32OperationFilterInput
+  kitSnapshots: ListFilterInputTypeOfKitSnapshotFilterInput
+  partnerStatusAck: PartnerStatusAckFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input SnapshotChangeStatusOperationFilterInput {
+  eq: SnapshotChangeStatus
+  neq: SnapshotChangeStatus
+  in: [SnapshotChangeStatus!]
+  nin: [SnapshotChangeStatus!]
+}
+
+input KitVinImportFilterInput {
+  and: [KitVinImportFilterInput!]
+  or: [KitVinImportFilterInput!]
+  plantId: ComparableGuidOperationFilterInput
+  plant: PlantFilterInput
+  partnerPlantCode: StringOperationFilterInput
+  sequence: ComparableInt32OperationFilterInput
+  kitVins: ListFilterInputTypeOfKitVinFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ShipmentFilterInput {
+  and: [ShipmentFilterInput!]
+  or: [ShipmentFilterInput!]
+  plantId: ComparableGuidOperationFilterInput
+  plant: PlantFilterInput
+  sequence: ComparableInt32OperationFilterInput
+  shipmentLots: ListFilterInputTypeOfShipmentLotFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ListFilterInputTypeOfPCVFilterInput {
+  all: PCVFilterInput
+  none: PCVFilterInput
+  some: PCVFilterInput
+  any: Boolean
+}
+
+input PartFilterInput {
+  and: [PartFilterInput!]
+  or: [PartFilterInput!]
+  partNo: StringOperationFilterInput
+  partDesc: StringOperationFilterInput
+  originalPartNo: StringOperationFilterInput
+  lotParts: ListFilterInputTypeOfLotPartFilterInput
+  shipmentParts: ListFilterInputTypeOfShipmentPartFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ListFilterInputTypeOfLotPartReceivedFilterInput {
+  all: LotPartReceivedFilterInput
+  none: LotPartReceivedFilterInput
+  some: LotPartReceivedFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfShipmentInvoiceFilterInput {
+  all: ShipmentInvoiceFilterInput
+  none: ShipmentInvoiceFilterInput
+  some: ShipmentInvoiceFilterInput
+  any: Boolean
+}
+
+input TimeLineEventCodeOperationFilterInput {
+  eq: TimeLineEventCode
+  neq: TimeLineEventCode
+  in: [TimeLineEventCode!]
+  nin: [TimeLineEventCode!]
+}
+
+input PartnerStatusAckFilterInput {
+  and: [PartnerStatusAckFilterInput!]
+  or: [PartnerStatusAckFilterInput!]
+  totalProcessed: ComparableInt32OperationFilterInput
+  totalAccepted: ComparableInt32OperationFilterInput
+  totalRejected: ComparableInt32OperationFilterInput
+  fileDate: ComparableDateTimeOperationFilterInput
+  kitSnapshotRunId: ComparableGuidOperationFilterInput
+  kitSnapshotRun: KitSnapshotRunFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ListFilterInputTypeOfShipmentPartFilterInput {
+  all: ShipmentPartFilterInput
+  none: ShipmentPartFilterInput
+  some: ShipmentPartFilterInput
+  any: Boolean
+}
+
+input LotPartReceivedFilterInput {
+  and: [LotPartReceivedFilterInput!]
+  or: [LotPartReceivedFilterInput!]
+  lotPartId: ComparableGuidOperationFilterInput
+  lotPart: LotPartFilterInput
+  quantity: ComparableInt32OperationFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ShipmentInvoiceFilterInput {
+  and: [ShipmentInvoiceFilterInput!]
+  or: [ShipmentInvoiceFilterInput!]
+  invoiceNo: StringOperationFilterInput
+  shipDate: ComparableDateTimeOperationFilterInput
+  shipmentLotId: ComparableGuidOperationFilterInput
+  shipmentLot: ShipmentLotFilterInput
+  handlingUnits: ListFilterInputTypeOfHandlingUnitFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ShipmentPartFilterInput {
+  and: [ShipmentPartFilterInput!]
+  or: [ShipmentPartFilterInput!]
+  partId: ComparableGuidOperationFilterInput
+  part: PartFilterInput
+  quantity: ComparableInt32OperationFilterInput
+  handlingUnitId: ComparableNullableOfGuidOperationFilterInput
+  handlingUnit: HandlingUnitFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ListFilterInputTypeOfHandlingUnitFilterInput {
+  all: HandlingUnitFilterInput
+  none: HandlingUnitFilterInput
+  some: HandlingUnitFilterInput
+  any: Boolean
+}
+
+input HandlingUnitFilterInput {
+  and: [HandlingUnitFilterInput!]
+  or: [HandlingUnitFilterInput!]
+  code: StringOperationFilterInput
+  shipmentInvoiceId: ComparableGuidOperationFilterInput
+  shipmentInvoice: ShipmentInvoiceFilterInput
+  parts: ListFilterInputTypeOfShipmentPartFilterInput
+  received: ListFilterInputTypeOfHandlingUnitReceivedFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input ListFilterInputTypeOfHandlingUnitReceivedFilterInput {
+  all: HandlingUnitReceivedFilterInput
+  none: HandlingUnitReceivedFilterInput
+  some: HandlingUnitReceivedFilterInput
+  any: Boolean
+}
+
+input HandlingUnitReceivedFilterInput {
+  and: [HandlingUnitReceivedFilterInput!]
+  or: [HandlingUnitReceivedFilterInput!]
+  handlingUnitId: ComparableGuidOperationFilterInput
+  handlingUnit: HandlingUnitFilterInput
+  id: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  removedAt: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+type Query {
+  serverConfigSettings: ConfigurationDTO!
+  info: String!
+  shipmentOverview(shipmentId: UUID!): ShipmentOverviewDTO
+  handlingUnitOverviews(shipmentId: UUID!): [HandlingUnitOverview!]!
+  handlingUnitInfo(huCode: String!): HandlingUnitInfoPayload
+  kitById(id: UUID!): Kit
+  kitByKitNo(kitNo: String!): Kit
+  kitTimeline(kitNo: String!): KitTimelineDTO
+  lotByLotNo(lotNo: String!): Lot
+  lotOverview(lotNo: String!): LotOverviewDTO
+  lotPartsByBom(bomId: UUID!): [LotPartDTO!]!
+  lotPartsByShipment(shipmentId: UUID!): [LotPartDTO!]!
+  kitsByLot(lotNo: String!): [Kit!]!
+  pcvById(id: UUID!): PCV
+  componentById(id: UUID!): Component
+  vehicleComponentByVinAndComponent(vin: String! componentCode: String!): KitComponent @deprecated(reason: "no longer used")
+  componentScanById(id: UUID!): ComponentSerial @deprecated(reason: "no longer used")
+  existingComponentScan(vehicleComponentId: UUID!): ComponentSerial @deprecated(reason: "no longer used")
+  kitList(plantCode: String! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [KitListItemDTOSortInput!]): KitListConnection
+  bomList(plantCode: String! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String order: [BomListDTOSortInput!]): BomListConnection
+  bomById(id: UUID!): Bom
+  bomOverview(id: UUID!): BomOverviewDTO
+  lotListByBomId(id: UUID!): [LotListDTO!]!
+  bomPartsQuantity(id: UUID!): [PartQuantityDTO!]!
+  kitSnapshotRunByDate(plantCode: String! runDate: DateTime!): KitSnapshotRunDTO
+  kitSnapshotRun(plantCode: String! sequence: Int!): KitSnapshotRunDTO
+  lotInfo(lotNo: String!): LotDTO
+  lotPartInfo(lotNo: String! partNo: String!): LotPartDTO
+  recentLotPartsReceived(count: Int! = 100): [LotPartReceivedDTO!]!
+  basicKitInfo(vin: String!): BasicKitInfo
+  kitComponentSerialInfo(kitNo: String! componentCode: String!): KitComponentSerialInfo
+  pingDcwsService: Boolean!
+  dcwsServiceVersion: String!
+  partnerStatusFilePayload(plantCode: String! sequence: Int!): PartnerStatusDTO!
+  parseBomFile(text: String!): BomFile!
+  parseShipFile(text: String!): ShipFile!
+  parseVinFile(text: String!): VinFile!
+  parsePartnerStatusAckFile(text: String!): PartnerStatusAckDTO!
+  genVinImportAcknowledgment(plantCode: String! sequence: Int!): KitVinAckDTO!
+  fordInterfaceFileType(filename: String!): FordInterfaceFileType!
+  genPartnerStatusFilename(kitSnapshotRunId: UUID!): String!
+  appSettings: [AppSetting!]!
+  kitTimelineEventsByDate(plantCode: String! fromDate: DateTime! toDate: DateTime! timelineEventCode: TimeLineEventCode): [KitTimelineEvent!]!
+  kitsByCurrentTimelineEvent(plantCode: String! eventCode: TimeLineEventCode "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: KitFilterInput order: [KitSortInput!]): KitsByCurrentTimelineEventConnection
+  components("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ComponentFilterInput order: [ComponentSortInput!]): ComponentsConnection
+  parts("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PartFilterInput order: [PartSortInput!]): PartsConnection
+  plants: [Plant!]!
+  kits(plantCode: String! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: KitFilterInput order: [KitSortInput!]): KitsConnection
+  lots(plantCode: String! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: LotFilterInput order: [LotSortInput!]): LotsConnection
+  kitComponents("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: KitComponentFilterInput order: [KitComponentSortInput!]): KitComponentsConnection
+  componentSerials("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ComponentSerialFilterInput order: [ComponentSerialSortInput!]): ComponentSerialsConnection
+  dcwsResponses("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DcwsResponseFilterInput order: [DcwsResponseSortInput!]): DcwsResponsesConnection
+  productionStations("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ProductionStationFilterInput order: [ProductionStationSortInput!]): ProductionStationsConnection
+  componentStations("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ComponentStationFilterInput order: [ComponentStationSortInput!]): ComponentStationsConnection
+  shipments("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ShipmentFilterInput order: [ShipmentSortInput!]): ShipmentsConnection
+  shipmentParts("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: ShipmentPartFilterInput order: [ShipmentPartSortInput!]): ShipmentPartsConnection
+  handlingUnits("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: HandlingUnitFilterInput order: [HandlingUnitSortInput!]): HandlingUnitsConnection
+  vinImports("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: KitVinImportFilterInput order: [KitVinImportSortInput!]): VinImportsConnection
+  kitSnapshotRuns("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: KitSnapshotRunFilterInput order: [KitSnapshotRunSortInput!]): KitSnapshotRunsConnection
+  kitSnapshots("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: KitSnapshotFilterInput order: [KitSnapshotSortInput!]): KitSnapshotsConnection
+  dealers("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: DealerFilterInput order: [DealerSortInput!]): DealersConnection
+  kitTimelineEvents("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: KitTimelineEventFilterInput order: [KitTimelineEventSortInput!]): KitTimelineEventsConnection
+  pcvs("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PCVFilterInput order: [PCVSortInput!]): PcvsConnection
+  pcvComponents("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PcvComponentFilterInput order: [PcvComponentSortInput!]): PcvComponentsConnection
+  pcvModels("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PcvModelFilterInput order: [PcvModelSortInput!]): PcvModelsConnection
+  pcvSubmodels("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PcvSubmodelFilterInput order: [PcvSubmodelSortInput!]): PcvSubmodelsConnection
+  pcvSeries("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PcvSeriesFilterInput order: [PcvSeriesSortInput!]): PcvSeriesConnection
+  pcvEngines("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PcvEngineFilterInput order: [PcvEngineSortInput!]): PcvEnginesConnection
+  pcvTransmissions("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PcvTransmissionFilterInput order: [PcvTransmissionSortInput!]): PcvTransmissionsConnection
+  pcvDrives("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PcvDriveFilterInput order: [PcvDriveSortInput!]): PcvDrivesConnection
+  pcvPaint("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PcvPaintFilterInput order: [PcvPaintSortInput!]): PcvPaintConnection
+  pcvTrim("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: PcvTrimFilterInput order: [PcvTrimSortInput!]): PcvTrimConnection
+  kitsByTimelineStatusSummary: [ItemCountDTO!]!
+}
+
+type Mutation {
+  createKitTimelineEvent(input: KitTimelineEventInput!): MutationResultOfKitTimelineEvent!
+  createLotTimelineEvent(input: LotTimelineEventInput!): MutationResultOfLot!
+  saveComponent(input: ComponentInput!): MutationResultOfUpdateComponentPayload!
+  setComponentDefaultStation(input: SetDefaultStationInput!): MutationResultOfUpdateComponentPayload!
+  saveStation(input: StationInput!): MutationResultOfUpdateStationPayload!
+  saveComponentStation(input: SaveComponentStationInput!): MutationResultOfSaveComponentStationPayload!
+  captureComponentSerial(input: ComponentSerialInput!): MutationResultOfComponentSerialDTO!
+  createDcwsResponse(input: DcwsComponentResponseInput!): MutationResultOfDcwsResponse!
+  importShipment(input: ShipFileInput!): MutationResultOfShipmentOverviewDTO!
+  importVIN(input: VinFileInput!): MutationResultOfKitVinImport!
+  importBom(input: BomFileInput!): MutationResultOfBomOverviewDTO!
+  generateKitSnapshotRun(input: KitSnapshotInput!): MutationResultOfSnapshotDTO!
+  createPlant(input: PlantInput!): MutationResultOfPlantOverviewDTO!
+  createLotPartQuantityReceived(input: ReceiveLotPartInput!): MutationResultOfLotPartDTO!
+  verifyComponentSerial(kitComponentId: UUID!): MutationResultOfDcwsResponse!
+  setHandlingUnitReceived(input: ReceiveHandlingUnitInput!): MutationResultOfReceiveHandlingUnitPayload!
+  applyComponentSerialFormat(input: ApplyComponentSerialFormatInput!): ComponentSerial!
+  setLotNote(input: LotNoteInput!): MutationResultOfLot!
+  rollbackKitsnapshots(kitNo: String! toTimelineEventCode: TimeLineEventCode!): MutationResultOfListOfKitSnapshot!
+  importPartnerStatusAck(input: PartnerStatusAckDTOInput!): MutationResultOfPartnerStatusAck!
+  createPCV(input: CreatePcvInput!): MutationResultOfSavePcvPayload!
+  autoVerifyVIN(currentDate: DateTime): MutationResultOfVerifyVinsPayload!
+  saveDcwsComponentResponse(input: DcwsComponentResponseInput!): MutationResultOfDcwsResponse!
+  createPcvMetaData(pcvMetadataType: PcvMetaType! input: CreateCategoryInput!): MutationResultOfUpdateCategoryPayload!
+  updatePcvMetaData(pcvMetadataType: PcvMetaType! input: UpdateCategoryInput!): MutationResultOfUpdateCategoryPayload!
+  removeShipment(plantCode: String! sequence: Int!): MutationResultOfString!
+  removeBom(plantCode: String! sequence: Int!): MutationResultOfString!
+}
+
+scalar UUID
+
+type Lot {
+  lotNo: String
+  note: String
+  plantId: UUID!
+  plant: Plant
+  bomId: UUID!
+  bom: Bom
+  modelId: UUID!
+  pcv: PCV
+  kits: [Kit]
+  lotParts: [LotPart]
+  shipmentLots: [ShipmentLot]
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type Dealer {
+  code: String!
+  name: String!
+  kits: [Kit!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type KitTimelineEvent {
+  kitTimelineEventTypeId: UUID!
+  eventType: KitTimelineEventType
+  eventDate: DateTime!
+  eventNote: String
+  kitId: UUID!
+  kit: Kit
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type KitSnapshot {
+  kitSnapshotRunId: UUID!
+  kitSnapshotRun: KitSnapshotRun
+  kitId: UUID!
+  kit: Kit
+  changeStatusCode: SnapshotChangeStatus!
+  kitTimeLineEventTypeId: UUID!
+  kitTimeLineEventType: KitTimelineEventType
+  vIN: String
+  dealerCode: String
+  engineSerialNumber: String
+  orginalPlanBuild: DateTime
+  customReceived: DateTime
+  planBuild: DateTime
+  verifyVIN: DateTime
+  buildCompleted: DateTime
+  gateRelease: DateTime
+  wholesale: DateTime
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+type TimelineEventDTO {
+  eventType: TimeLineEventCode!
+  eventDate: DateTime
+  eventNote: String
+  createdAt: DateTime
+  removedAt: DateTime
+  sequence: Int!
+}
+
+type PcvComponent {
+  pcvId: UUID!
+  pcv: PCV
+  componentId: UUID!
+  component: Component
+  productionStationId: UUID!
+  productionStation: ProductionStation
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type PcvModel implements ICategory {
+  code: String!
+  name: String!
+  pcvs: [PCV!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type PcvSubmodel implements ICategory {
+  code: String!
+  name: String!
+  pcvs: [PCV!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type PcvSeries implements ICategory {
+  code: String!
+  name: String!
+  pcvs: [PCV!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type PcvEngine implements ICategory {
+  code: String!
+  name: String!
+  pcvs: [PCV!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type PcvTransmission implements ICategory {
+  code: String!
+  name: String!
+  pcvs: [PCV!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type PcvDrive implements ICategory {
+  code: String!
+  name: String!
+  pcvs: [PCV!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type PcvPaint implements ICategory {
+  code: String!
+  name: String!
+  pcvs: [PCV!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type PcvTrim implements ICategory {
+  code: String!
+  name: String!
+  pcvs: [PCV!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type ComponentSerial {
+  kitComponentId: UUID!
+  kitComponent: KitComponent
+  serial1: String
+  serial2: String
+  original_Serial1: String
+  original_Serial2: String
+  verifiedAt: DateTime
+  dcwsResponses: [DcwsResponse]
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type Component {
+  code: String!
+  name: String!
+  iconURL: String!
+  productionStation: ProductionStation
+  productionStationId: UUID
+  componentSerialRule: ComponentSerialRule!
+  dcwsRequired: Boolean!
+  pcvComponents: [PcvComponent!]!
+  kitComponents: [KitComponent!]!
+  componentStations: [ComponentStation!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type ProductionStation {
+  code: String!
+  name: String!
+  sequence: Int!
+  modelComponents: [PcvComponent!]!
+  kitComponents: [KitComponent!]!
+  defaultStationComponents: [Component!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type KitVinImport {
+  plantId: UUID!
+  plant: Plant
+  partnerPlantCode: String
+  sequence: Int!
+  kitVins: [KitVin]
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+enum ComponentSerialRule {
+  ONE_OR_BOTH_SERIALS
+  ONE_SERIAL
+  BOTH_SERIALS
+  VIN_AND_BODY
+}
+
+enum SnapshotChangeStatus {
+  ADDED
+  CHANGED
+  NO_CHANGE
+  FINAL
+}
+
+enum TimeLineEventCode {
+  CUSTOM_RECEIVED
+  PLAN_BUILD
+  VERIFY_VIN
+  BUILD_COMPLETED
+  GATE_RELEASED
+  WHOLE_SALE
+}
+
+input KitListItemDTOSortInput {
+  id: SortEnumType
+  lotNo: SortEnumType
+  kitNo: SortEnumType
+  vIN: SortEnumType
+  modelCode: SortEnumType
+  modelName: SortEnumType
+  lastTimelineEvent: SortEnumType
+  lastTimelineEventDate: SortEnumType
+  componentCount: SortEnumType
+  scannedComponentCount: SortEnumType
+  verifiedComponentCount: SortEnumType
+  imported: SortEnumType
+}
+
+input BomListDTOSortInput {
+  id: SortEnumType
+  plantCode: SortEnumType
+  sequence: SortEnumType
+  createdAt: SortEnumType
+}
+
+input KitSortInput {
+  vIN: SortEnumType
+  kitNo: SortEnumType
+  lotId: SortEnumType
+  lot: LotSortInput
+  dealerId: SortEnumType
+  dealer: DealerSortInput
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+"A connection to a list of items."
+type KitListConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [KitListEdge!]
+  "A flattened list of the nodes."
+  nodes: [KitListItemDTO!]
+}
+
+"A connection to a list of items."
+type BomListConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [BomListEdge!]
+  "A flattened list of the nodes."
+  nodes: [BomListDTO!]
+}
+
+"A connection to a list of items."
+type KitsByCurrentTimelineEventConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [KitsByCurrentTimelineEventEdge!]
+  "A flattened list of the nodes."
+  nodes: [Kit!]
+}
+
+input ComponentSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  iconURL: SortEnumType
+  productionStation: ProductionStationSortInput
+  productionStationId: SortEnumType
+  componentSerialRule: SortEnumType
+  dcwsRequired: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PartSortInput {
+  partNo: SortEnumType
+  partDesc: SortEnumType
+  originalPartNo: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input LotSortInput {
+  lotNo: SortEnumType
+  note: SortEnumType
+  plantId: SortEnumType
+  plant: PlantSortInput
+  bomId: SortEnumType
+  bom: BomSortInput
+  modelId: SortEnumType
+  pcv: PCVSortInput
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input KitComponentSortInput {
+  kitId: SortEnumType
+  kit: KitSortInput
+  componentId: SortEnumType
+  component: ComponentSortInput
+  productionStationId: SortEnumType
+  productionStation: ProductionStationSortInput
+  verifiedAt: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input ComponentSerialSortInput {
+  kitComponentId: SortEnumType
+  kitComponent: KitComponentSortInput
+  serial1: SortEnumType
+  serial2: SortEnumType
+  original_Serial1: SortEnumType
+  original_Serial2: SortEnumType
+  verifiedAt: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input DcwsResponseSortInput {
+  processExcptionCode: SortEnumType
+  errorMessage: SortEnumType
+  componentSerialId: SortEnumType
+  componentSerial: ComponentSerialSortInput
+  dcwsSuccessfulSave: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input ProductionStationSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  sequence: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input ComponentStationSortInput {
+  component: ComponentSortInput
+  componentId: SortEnumType
+  station: ProductionStationSortInput
+  stationId: SortEnumType
+  saveCDCComponent: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input ShipmentSortInput {
+  plantId: SortEnumType
+  plant: PlantSortInput
+  sequence: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input ShipmentPartSortInput {
+  partId: SortEnumType
+  part: PartSortInput
+  quantity: SortEnumType
+  handlingUnitId: SortEnumType
+  handlingUnit: HandlingUnitSortInput
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input HandlingUnitSortInput {
+  code: SortEnumType
+  shipmentInvoiceId: SortEnumType
+  shipmentInvoice: ShipmentInvoiceSortInput
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input KitVinImportSortInput {
+  plantId: SortEnumType
+  plant: PlantSortInput
+  partnerPlantCode: SortEnumType
+  sequence: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input KitSnapshotRunSortInput {
+  plantId: SortEnumType
+  plant: PlantSortInput
+  runDate: SortEnumType
+  sequence: SortEnumType
+  partnerStatusAck: PartnerStatusAckSortInput
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input KitSnapshotSortInput {
+  kitSnapshotRunId: SortEnumType
+  kitSnapshotRun: KitSnapshotRunSortInput
+  kitId: SortEnumType
+  kit: KitSortInput
+  changeStatusCode: SortEnumType
+  kitTimeLineEventTypeId: SortEnumType
+  kitTimeLineEventType: KitTimelineEventTypeSortInput
+  vIN: SortEnumType
+  dealerCode: SortEnumType
+  engineSerialNumber: SortEnumType
+  orginalPlanBuild: SortEnumType
+  customReceived: SortEnumType
+  planBuild: SortEnumType
+  verifyVIN: SortEnumType
+  buildCompleted: SortEnumType
+  gateRelease: SortEnumType
+  wholesale: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input DealerSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input KitTimelineEventSortInput {
+  kitTimelineEventTypeId: SortEnumType
+  eventType: KitTimelineEventTypeSortInput
+  eventDate: SortEnumType
+  eventNote: SortEnumType
+  kitId: SortEnumType
+  kit: KitSortInput
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PCVSortInput {
+  code: SortEnumType
+  description: SortEnumType
+  modelYear: SortEnumType
+  model: SortEnumType
+  series: SortEnumType
+  body: SortEnumType
+  pcvModel: PcvModelSortInput
+  pcvModelId: SortEnumType
+  pcvSubmodel: PcvSubmodelSortInput
+  pcvSubmodelId: SortEnumType
+  pcvSeries: PcvSeriesSortInput
+  pcvSeriesId: SortEnumType
+  pcvEngine: PcvEngineSortInput
+  pcvEngineId: SortEnumType
+  pcvTransmission: PcvTransmissionSortInput
+  pcvTransmissionId: SortEnumType
+  pcvDrive: PcvDriveSortInput
+  pcvDriveId: SortEnumType
+  pcvPaint: PcvPaintSortInput
+  pcvPaintId: SortEnumType
+  pcvTrim: PcvTrimSortInput
+  pcvTrimId: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PcvComponentSortInput {
+  pcvId: SortEnumType
+  pcv: PCVSortInput
+  componentId: SortEnumType
+  component: ComponentSortInput
+  productionStationId: SortEnumType
+  productionStation: ProductionStationSortInput
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PcvModelSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PcvSubmodelSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PcvSeriesSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PcvEngineSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PcvTransmissionSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PcvDriveSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PcvPaintSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PcvTrimSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+"A connection to a list of items."
+type ComponentsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ComponentsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Component!]
+}
+
+"A connection to a list of items."
+type PartsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PartsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Part!]
+}
+
+"A connection to a list of items."
+type KitsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [KitsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Kit!]
+}
+
+"A connection to a list of items."
+type LotsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [LotsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Lot!]
+}
+
+"A connection to a list of items."
+type KitComponentsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [KitComponentsEdge!]
+  "A flattened list of the nodes."
+  nodes: [KitComponent!]
+}
+
+"A connection to a list of items."
+type ComponentSerialsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ComponentSerialsEdge!]
+  "A flattened list of the nodes."
+  nodes: [ComponentSerial!]
+}
+
+"A connection to a list of items."
+type DcwsResponsesConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DcwsResponsesEdge!]
+  "A flattened list of the nodes."
+  nodes: [DcwsResponse!]
+}
+
+"A connection to a list of items."
+type ProductionStationsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ProductionStationsEdge!]
+  "A flattened list of the nodes."
+  nodes: [ProductionStation!]
+}
+
+"A connection to a list of items."
+type ComponentStationsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ComponentStationsEdge!]
+  "A flattened list of the nodes."
+  nodes: [ComponentStation!]
+}
+
+"A connection to a list of items."
+type ShipmentsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ShipmentsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Shipment!]
+}
+
+"A connection to a list of items."
+type ShipmentPartsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ShipmentPartsEdge!]
+  "A flattened list of the nodes."
+  nodes: [ShipmentPart!]
+}
+
+"A connection to a list of items."
+type HandlingUnitsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [HandlingUnitsEdge!]
+  "A flattened list of the nodes."
+  nodes: [HandlingUnit!]
+}
+
+"A connection to a list of items."
+type VinImportsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [VinImportsEdge!]
+  "A flattened list of the nodes."
+  nodes: [KitVinImport!]
+}
+
+"A connection to a list of items."
+type KitSnapshotRunsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [KitSnapshotRunsEdge!]
+  "A flattened list of the nodes."
+  nodes: [KitSnapshotRun!]
+}
+
+"A connection to a list of items."
+type KitSnapshotsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [KitSnapshotsEdge!]
+  "A flattened list of the nodes."
+  nodes: [KitSnapshot!]
+}
+
+"A connection to a list of items."
+type DealersConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [DealersEdge!]
+  "A flattened list of the nodes."
+  nodes: [Dealer!]
+}
+
+"A connection to a list of items."
+type KitTimelineEventsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [KitTimelineEventsEdge!]
+  "A flattened list of the nodes."
+  nodes: [KitTimelineEvent!]
+}
+
+"A connection to a list of items."
+type PcvsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PcvsEdge!]
+  "A flattened list of the nodes."
+  nodes: [PCV!]
+}
+
+"A connection to a list of items."
+type PcvComponentsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PcvComponentsEdge!]
+  "A flattened list of the nodes."
+  nodes: [PcvComponent!]
+}
+
+"A connection to a list of items."
+type PcvModelsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PcvModelsEdge!]
+  "A flattened list of the nodes."
+  nodes: [PcvModel!]
+}
+
+"A connection to a list of items."
+type PcvSubmodelsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PcvSubmodelsEdge!]
+  "A flattened list of the nodes."
+  nodes: [PcvSubmodel!]
+}
+
+"A connection to a list of items."
+type PcvSeriesConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PcvSeriesEdge!]
+  "A flattened list of the nodes."
+  nodes: [PcvSeries!]
+}
+
+"A connection to a list of items."
+type PcvEnginesConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PcvEnginesEdge!]
+  "A flattened list of the nodes."
+  nodes: [PcvEngine!]
+}
+
+"A connection to a list of items."
+type PcvTransmissionsConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PcvTransmissionsEdge!]
+  "A flattened list of the nodes."
+  nodes: [PcvTransmission!]
+}
+
+"A connection to a list of items."
+type PcvDrivesConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PcvDrivesEdge!]
+  "A flattened list of the nodes."
+  nodes: [PcvDrive!]
+}
+
+"A connection to a list of items."
+type PcvPaintConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PcvPaintEdge!]
+  "A flattened list of the nodes."
+  nodes: [PcvPaint!]
+}
+
+"A connection to a list of items."
+type PcvTrimConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [PcvTrimEdge!]
+  "A flattened list of the nodes."
+  nodes: [PcvTrim!]
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+}
+
+"An edge in a connection."
+type KitListEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: KitListItemDTO!
+}
+
+type BomListDTO {
+  id: UUID!
+  plantCode: String
+  sequence: Int!
+  lots: [BomList_Lot]
+  createdAt: DateTime!
+}
+
+"An edge in a connection."
+type BomListEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: BomListDTO!
+}
+
+"An edge in a connection."
+type KitsByCurrentTimelineEventEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Kit!
+}
+
+input PlantSortInput {
+  code: SortEnumType
+  name: SortEnumType
+  partnerPlantCode: SortEnumType
+  partnerPlantType: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input BomSortInput {
+  plantId: SortEnumType
+  plant: PlantSortInput
+  sequence: SortEnumType
+  lotPartQuantitiesMatchShipment: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input ShipmentInvoiceSortInput {
+  invoiceNo: SortEnumType
+  shipDate: SortEnumType
+  shipmentLotId: SortEnumType
+  shipmentLot: ShipmentLotSortInput
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input PartnerStatusAckSortInput {
+  totalProcessed: SortEnumType
+  totalAccepted: SortEnumType
+  totalRejected: SortEnumType
+  fileDate: SortEnumType
+  kitSnapshotRunId: SortEnumType
+  kitSnapshotRun: KitSnapshotRunSortInput
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input KitTimelineEventTypeSortInput {
+  code: SortEnumType
+  description: SortEnumType
+  sequence: SortEnumType
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+"An edge in a connection."
+type ComponentsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Component!
+}
+
+type Part {
+  partNo: String!
+  partDesc: String!
+  originalPartNo: String!
+  lotParts: [LotPart!]!
+  shipmentParts: [ShipmentPart!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+"An edge in a connection."
+type PartsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Part!
+}
+
+"An edge in a connection."
+type KitsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Kit!
+}
+
+"An edge in a connection."
+type LotsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Lot!
+}
+
+"An edge in a connection."
+type KitComponentsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: KitComponent!
+}
+
+"An edge in a connection."
+type ComponentSerialsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: ComponentSerial!
+}
+
+type DcwsResponse {
+  processExcptionCode: String
+  errorMessage: String
+  componentSerialId: UUID!
+  componentSerial: ComponentSerial
+  dcwsSuccessfulSave: Boolean!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+"An edge in a connection."
+type DcwsResponsesEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: DcwsResponse!
+}
+
+"An edge in a connection."
+type ProductionStationsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: ProductionStation!
+}
+
+type ComponentStation {
+  component: Component!
+  componentId: UUID!
+  station: ProductionStation!
+  stationId: UUID!
+  saveCDCComponent: Boolean!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+"An edge in a connection."
+type ComponentStationsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: ComponentStation!
+}
+
+type Shipment {
+  plantId: UUID!
+  plant: Plant
+  sequence: Int!
+  shipmentLots: [ShipmentLot]
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+"An edge in a connection."
+type ShipmentsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Shipment!
+}
+
+type ShipmentPart {
+  partId: UUID!
+  part: Part
+  quantity: Int!
+  handlingUnitId: UUID
+  handlingUnit: HandlingUnit
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+"An edge in a connection."
+type ShipmentPartsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: ShipmentPart!
+}
+
+type HandlingUnit {
+  code: String
+  shipmentInvoiceId: UUID!
+  shipmentInvoice: ShipmentInvoice
+  parts: [ShipmentPart]
+  received: [HandlingUnitReceived]
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+"An edge in a connection."
+type HandlingUnitsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: HandlingUnit!
+}
+
+"An edge in a connection."
+type VinImportsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: KitVinImport!
+}
+
+type KitSnapshotRun {
+  plantId: UUID!
+  plant: Plant
+  runDate: DateTime!
+  sequence: Int!
+  kitSnapshots: [KitSnapshot]
+  partnerStatusAck: PartnerStatusAck
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+"An edge in a connection."
+type KitSnapshotRunsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: KitSnapshotRun!
+}
+
+"An edge in a connection."
+type KitSnapshotsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: KitSnapshot!
+}
+
+"An edge in a connection."
+type DealersEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Dealer!
+}
+
+"An edge in a connection."
+type KitTimelineEventsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: KitTimelineEvent!
+}
+
+"An edge in a connection."
+type PcvsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PCV!
+}
+
+"An edge in a connection."
+type PcvComponentsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PcvComponent!
+}
+
+"An edge in a connection."
+type PcvModelsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PcvModel!
+}
+
+"An edge in a connection."
+type PcvSubmodelsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PcvSubmodel!
+}
+
+"An edge in a connection."
+type PcvSeriesEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PcvSeries!
+}
+
+"An edge in a connection."
+type PcvEnginesEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PcvEngine!
+}
+
+"An edge in a connection."
+type PcvTransmissionsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PcvTransmission!
+}
+
+"An edge in a connection."
+type PcvDrivesEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PcvDrive!
+}
+
+"An edge in a connection."
+type PcvPaintEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PcvPaint!
+}
+
+"An edge in a connection."
+type PcvTrimEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: PcvTrim!
+}
+
+input ShipmentLotSortInput {
+  shipmentId: SortEnumType
+  shipment: ShipmentSortInput
+  lotId: SortEnumType
+  lot: LotSortInput
+  id: SortEnumType
+  createdAt: SortEnumType
+  removedAt: SortEnumType
+}
+
+input SetDefaultStationInput {
+  componentCode: String!
+  productionStationCode: String!
+}
+
+input ComponentInput {
+  id: UUID
+  code: String!
+  name: String!
+  dcwsRequired: Boolean
+  productionStationCode: String
+  dcwsSerialCaptureRule: ComponentSerialRule!
+}
+
+type MutationResultOfUpdateComponentPayload {
+  payload: UpdateComponentPayload
+  errors: [Error!]!
+}
+
+input LotTimelineEventInput {
+  lotNo: String!
+  eventCode: TimeLineEventCode!
+  eventDate: DateTime!
+  eventNote: String!
+}
+
+type MutationResultOfLot {
+  payload: Lot
+  errors: [Error!]!
+}
+
+input KitTimelineEventInput {
+  kitNo: String!
+  eventCode: TimeLineEventCode!
+  eventDate: DateTime!
+  eventNote: String!
+  dealerCode: String!
+}
+
+type MutationResultOfKitTimelineEvent {
+  payload: KitTimelineEvent
+  errors: [Error!]!
+}
+
+type ItemCountDTO {
+  code: String
+  name: String
+  count: Int!
+}
+
+type Plant {
+  code: String
+  name: String
+  partnerPlantCode: String
+  partnerPlantType: String
+  lots: [Lot]
+  kitSnapshotRuns: [KitSnapshotRun]
+  boms: [Bom]
+  shipments: [Shipment]
+  kitVinImports: [KitVinImport]
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type AppSetting {
+  code: String!
+  value: String!
+  description: String!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+enum FordInterfaceFileType {
+  BOM
+  SHIP
+  VIN
+  PARTNER_STATUS_ACK
+  UNKOWN
+}
+
+type KitVinAckDTO {
+  plantCode: String!
+  sequence: Int!
+  errorMessage: String!
+  filename: String!
+  payloadText: String!
+}
+
+type PartnerStatusAckDTO {
+  plantCode: String!
+  partnerPlantCode: String!
+  sequence: Int!
+  fileDate: String!
+  totalProcessed: Int!
+  totalAccepted: Int!
+  totalRejected: Int!
+}
+
+type VinFile {
+  plantCode: String
+  sequence: Int!
+  partnerPlantCode: String
+  kits: [VinFileKit]
+}
+
+type ShipFile {
+  plantCode: String!
+  sequence: Int!
+  created: DateTime!
+  lots: [ShipFileLot!]!
+}
+
+type BomFile {
+  plantCode: String!
+  sequence: Int!
+  bomFileCreatedAt: String!
+  lotEntries: [BomFileLot!]!
+  lotParts: [BomFileLotPart!]!
+}
+
+type PartnerStatusDTO {
+  plantCode: String!
+  sequence: Int!
+  runDate: DateTime
+  errorMessage: String!
+  filename: String!
+  payloadText: String!
+}
+
+type KitComponentSerialInfo {
+  componentCode: String!
+  componentName: String!
+  componentIconURL: String!
+  removedAt: DateTime
+  stations: [StatcionSerialInfo!]!
+}
+
+type LotPartReceivedDTO {
+  lotNo: String
+  partNo: String
+  partDesc: String
+  receivedQuantity: Int!
+  bomQuantity: Int!
+  shipmentQuantity: Int!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type LotDTO {
+  lotNo: String!
+  model: String!
+  modelCode: String!
+  modelDesc: String!
+  modelSeries: String!
+  modelBody: String!
+  createdAt: DateTime!
+}
+
+type KitSnapshotRunDTO {
+  runDate: DateTime!
+  sequence: Int!
+  plantCode: String
+  partnerPlantCode: String
+  partnerPlantType: String
+  partnerStatusFilename: String
+  partnerStatusAck: PartnerStatusAckDTO
+  entries: [Entry]
+}
+
+type PartQuantityDTO {
+  partNo: String!
+  partDesc: String!
+  quantity: Int!
+}
+
+type LotListDTO {
+  id: UUID!
+  plantCode: String!
+  lotNo: String!
+  kitCount: Int!
+  timelineStatus: TimeLineEventCode
+  createdAt: DateTime!
+}
+
+type BomOverviewDTO {
+  id: UUID!
+  plantCode: String!
+  shipments: [BomShipInfoDTO!]!
+  sequence: Int!
+  lotCount: Int!
+  partCount: Int!
+  vehicleCount: Int!
+  createdAt: DateTime!
+}
+
+type Bom {
+  plantId: UUID!
+  plant: Plant
+  sequence: Int!
+  lotPartQuantitiesMatchShipment: Boolean!
+  lots: [Lot]
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type LotPartDTO {
+  lotNo: String
+  partNo: String
+  partDesc: String
+  bomQuantity: Int!
+  shipmentQuantity: Int!
+  receivedQuantity: Int!
+  importDate: DateTime!
+  removedDate: DateTime
+  receivedDate: DateTime
+}
+
+type LotOverviewDTO {
+  id: UUID!
+  bomId: UUID!
+  bomSequence: Int!
+  shipmentId: UUID!
+  shipmentSequence: Int!
+  lotNo: String!
+  note: String!
+  plantCode: String!
+  pcvId: UUID!
+  pcvCode: String!
+  pcvDescription: String!
+  customReceived: TimelineEventDTO
+  createdAt: DateTime!
+}
+
+type HandlingUnitInfoPayload {
+  code: String
+  invoiceNo: String
+  lotNo: String
+  shipmentId: UUID!
+  plantCode: String!
+  shipmentSequence: Int!
+  modelCode: String
+  modelName: String
+  partCount: Int!
+  receivedAt: DateTime
+  parts: [HU_Part!]!
+}
+
+type HandlingUnitOverview {
+  plantCode: String
+  shipmentSequence: Int!
+  handlingUnitCode: String
+  lotNo: String
+  invoiceNo: String
+  partCount: Int!
+  createdAt: DateTime!
+  receivedAt: DateTime
+  receiveCancledAt: DateTime
+}
+
+type ShipmentOverviewDTO {
+  id: UUID!
+  plantCode: String
+  bomId: UUID!
+  bomSequence: Int!
+  sequence: Int!
+  lotCount: Int!
+  invoiceCount: Int!
+  handlingUnitCount: Int!
+  handlingUnitReceivedCount: Int!
+  lotPartCount: Int!
+  lotPartReceivedCount: Int!
+  bomShipDiffCount: Int!
+  lotPartReceiveBomDiffCount: Int!
+  lotNumbers: [String]
+  partCount: Int!
+  createdAt: DateTime!
+}
+
+type ConfigurationDTO {
+  dcwsServiceAddress: String!
+  allowGraphqlIntrospection: String!
+}
+
+type MutationResultOfUpdateStationPayload {
+  payload: UpdateStationPayload
+  errors: [Error!]!
+}
+
+input StationInput {
+  id: UUID
+  code: String!
+  name: String!
+  sequence: Int!
+}
+
+type MutationResultOfSaveComponentStationPayload {
+  payload: SaveComponentStationPayload
+  errors: [Error!]!
+}
+
+input SaveComponentStationInput {
+  componentCode: String!
+  stationCode: String!
+  saveCDCComponent: Boolean!
+}
+
+type MutationResultOfComponentSerialDTO {
+  payload: ComponentSerialDTO
+  errors: [Error!]!
+}
+
+input ComponentSerialInput {
+  kitComponentId: UUID!
+  serial1: String
+  serial2: String = ""
+  replace: Boolean! = false
+}
+
+type MutationResultOfDcwsResponse {
+  payload: DcwsResponse
+  errors: [Error!]!
+}
+
+input DcwsComponentResponseInput {
+  kitComponentId: UUID!
+  responseCode: String
+  errorMessage: String
+}
+
+type MutationResultOfShipmentOverviewDTO {
+  payload: ShipmentOverviewDTO
+  errors: [Error!]!
+}
+
+input ShipFileInput {
+  plantCode: String!
+  sequence: Int!
+  created: DateTime!
+  lots: [ShipFileLotInput!]!
+}
+
+type MutationResultOfKitVinImport {
+  payload: KitVinImport
+  errors: [Error!]!
+}
+
+input VinFileInput {
+  plantCode: String
+  sequence: Int!
+  partnerPlantCode: String
+  kits: [VinFileKitInput]
+}
+
+type MutationResultOfBomOverviewDTO {
+  payload: BomOverviewDTO
+  errors: [Error!]!
+}
+
+input BomFileInput {
+  plantCode: String!
+  sequence: Int!
+  bomFileCreatedAt: String!
+  lotEntries: [BomFileLotInput!]!
+  lotParts: [BomFileLotPartInput!]!
+}
+
+type MutationResultOfSnapshotDTO {
+  payload: SnapshotDTO
+  errors: [Error!]!
+}
+
+input KitSnapshotInput {
+  runDate: DateTime
+  plantCode: String!
+  rejectIfNoChanges: Boolean!
+  rejectIfPriorSnapshotNotAcknowledged: Boolean!
+  allowMultipleSnapshotsPerDay: Boolean!
+}
+
+type MutationResultOfPlantOverviewDTO {
+  payload: PlantOverviewDTO
+  errors: [Error!]!
+}
+
+input PlantInput {
+  code: String
+  partnerPlantCode: String
+  partnerPlantType: String
+  name: String
+}
+
+type MutationResultOfLotPartDTO {
+  payload: LotPartDTO
+  errors: [Error!]!
+}
+
+input ReceiveLotPartInput {
+  lotNo: String!
+  partNo: String!
+  quantity: Int!
+}
+
+type MutationResultOfReceiveHandlingUnitPayload {
+  payload: ReceiveHandlingUnitPayload
+  errors: [Error!]!
+}
+
+input ReceiveHandlingUnitInput {
+  handlingUnitCode: String
+  remove: Boolean! = false
+}
+
+input ApplyComponentSerialFormatInput {
+  id: UUID!
+}
+
+input LotNoteInput {
+  lotNo: String
+  note: String
+}
+
+type MutationResultOfListOfKitSnapshot {
+  payload: [KitSnapshot]
+  errors: [Error!]!
+}
+
+type MutationResultOfPartnerStatusAck {
+  payload: PartnerStatusAck
+  errors: [Error!]!
+}
+
+input PartnerStatusAckDTOInput {
+  plantCode: String!
+  partnerPlantCode: String!
+  sequence: Int!
+  fileDate: String!
+  totalProcessed: Int!
+  totalAccepted: Int!
+  totalRejected: Int!
+}
+
+type MutationResultOfSavePcvPayload {
+  payload: SavePcvPayload
+  errors: [Error!]!
+}
+
+input CreatePcvInput {
+  pcvCode: String!
+  modelYear: Int!
+  pcvModel: CategoryInput!
+  pcvSubmodel: CategoryInput!
+  pcvSeries: CategoryInput!
+  pcvEngine: CategoryInput!
+  pcvTransmission: CategoryInput!
+  pcvDrive: CategoryInput!
+  pcvPaint: CategoryInput!
+  pcvTrim: CategoryInput!
+  componentCodes: [String!]!
+}
+
+type MutationResultOfVerifyVinsPayload {
+  payload: VerifyVinsPayload
+  errors: [Error!]!
+}
+
+type MutationResultOfString {
+  payload: String
+  errors: [Error!]!
+}
+
+type MutationResultOfUpdateCategoryPayload {
+  payload: UpdateCategoryPayload
+  errors: [Error!]!
+}
+
+enum PcvMetaType {
+  PCV_MODEL
+  PCV_SUBMODEL
+  PCV_SERIES
+  PCV_ENGINE
+  PCV_TRANSMISSION
+  PCV_DRIVE
+  PCV_PAINT
+  PCV_TRIM
+}
+
+input CreateCategoryInput {
+  code: String
+  name: String
+}
+
+input UpdateCategoryInput {
+  id: UUID!
+  code: String
+  name: String
+}
+
+type LotPart {
+  partId: UUID!
+  part: Part
+  bomQuantity: Int!
+  shipmentQuantity: Int!
+  lotId: UUID!
+  lot: Lot
+  received: [LotPartReceived]
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type ShipmentLot {
+  shipmentId: UUID!
+  shipment: Shipment
+  lotId: UUID!
+  lot: Lot
+  invoices: [ShipmentInvoice]
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type KitTimelineEventType {
+  code: TimeLineEventCode!
+  description: String!
+  sequence: Int!
+  snapshots: [KitSnapshot!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type BomList_Lot {
+  lotNo: String
+  shipmentSequence: Int
+}
+
+type HandlingUnitReceived {
+  handlingUnitId: UUID!
+  handlingUnit: HandlingUnit
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type ShipmentInvoice {
+  invoiceNo: String!
+  shipDate: DateTime!
+  shipmentLotId: UUID!
+  shipmentLot: ShipmentLot!
+  handlingUnits: [HandlingUnit!]!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type PartnerStatusAck {
+  totalProcessed: Int!
+  totalAccepted: Int!
+  totalRejected: Int!
+  fileDate: DateTime!
+  kitSnapshotRunId: UUID!
+  kitSnapshotRun: KitSnapshotRun!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type LotPartReceived {
+  lotPartId: UUID!
+  lotPart: LotPart
+  quantity: Int!
+  id: UUID!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type UpdateCategoryPayload {
+  id: UUID!
+  code: String
+  name: String
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type VerifyVinsPayload {
+  kitNos: [String!]!
+}
+
+input CategoryInput {
+  code: String!
+  name: String!
+}
+
+type SavePcvPayload {
+  id: UUID!
+  pcvCode: String!
+  modelYear: String!
+  pcvModel: ICategory
+  pcvSubmodel: ICategory
+  pcvSeries: ICategory
+  pcvEngine: ICategory
+  pcvTransmission: ICategory
+  pcvDrive: ICategory
+  pcvPaint: ICategory
+  pcvTrim: ICategory
+  pcvComponentCodes: [String!]!
+}
+
+type ReceiveHandlingUnitPayload {
+  id: UUID!
+  code: String
+  invoiceNo: String
+  lotNo: String
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type PlantOverviewDTO {
+  id: UUID!
+  code: String!
+  name: String!
+  createdAt: DateTime!
+}
+
+type SnapshotDTO {
+  runDate: DateTime!
+  sequence: Int!
+  plantCode: String
+  snapshotCount: Int!
+  changedCount: Int!
+  removedAt: DateTime
+}
+
+input BomFileLotPartInput {
+  lotNo: String!
+  partNo: String!
+  partDesc: String!
+  quantity: Int!
+}
+
+input BomFileLotInput {
+  lotNo: String!
+  kits: [BomFileKitInput!]!
+}
+
+input ShipFileLotInput {
+  lotNo: String!
+  invoices: [ShipFileInvoiceInput!]!
+}
+
+type SaveComponentStationPayload {
+  id: UUID!
+  componentCode: String!
+  stationCode: String!
+  saveCDCComponent: Boolean!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type UpdateStationPayload {
+  id: UUID
+  code: String!
+  name: String!
+  sequence: Int!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type HU_Part {
+  partNo: String!
+  partDesc: String!
+  quantity: Int!
+}
+
+type BomShipInfoDTO {
+  shipmentId: UUID!
+  plantCode: String!
+  sequence: Int!
+}
+
+type Entry {
+  txType: SnapshotChangeStatus!
+  currentTimeLineCode: TimeLineEventCode!
+  lotNo: String
+  kitNo: String
+  vIN: String
+  dealerCode: String
+  engineSerialNumber: String
+  customReceived: DateTime
+  originalPlanBuild: DateTime
+  planBuild: DateTime
+  verifyVIN: DateTime
+  buildCompleted: DateTime
+  gateRelease: DateTime
+  wholesale: DateTime
+}
+
+type StatcionSerialInfo {
+  kitComponentId: UUID!
+  stationSequence: Int!
+  stationCode: String!
+  stationName: String!
+  serial1: String
+  serial2: String
+  createdAt: DateTime
+  verifiedAt: DateTime
+}
+
+type BomFileLotPart {
+  lotNo: String!
+  partNo: String!
+  partDesc: String!
+  quantity: Int!
+}
+
+type BomFileLot {
+  lotNo: String!
+  kits: [BomFileKit!]!
+}
+
+type ShipFileLot {
+  lotNo: String!
+  invoices: [ShipFileInvoice!]!
+}
+
+type Error {
+  path: [String!]!
+  message: String!
+}
+
+type UpdateComponentPayload {
+  id: UUID!
+  code: String!
+  name: String!
+  productionStationCode: String
+  dcwsRequired: Boolean!
+  createdAt: DateTime!
+  removedAt: DateTime
+}
+
+type ShipFileInvoice {
+  invoiceNo: String!
+  shipDate: DateTime!
+  parts: [ShipFilePart!]!
+}
+
+type BomFileKit {
+  kitNo: String!
+  pcvCode: String!
+}
+
+input ShipFileInvoiceInput {
+  invoiceNo: String!
+  shipDate: DateTime!
+  parts: [ShipFilePartInput!]!
+}
+
+input BomFileKitInput {
+  kitNo: String!
+  pcvCode: String!
+}
+
+interface ICategory {
+  code: String
+  name: String
+}
+
+input ShipFilePartInput {
+  partNo: String!
+  handlingUnitCode: String!
+  customerPartNo: String!
+  customerPartDesc: String!
+  quantity: Int!
+}
+
+type ShipFilePart {
+  partNo: String!
+  handlingUnitCode: String!
+  customerPartNo: String!
+  customerPartDesc: String!
+  quantity: Int!
+}
